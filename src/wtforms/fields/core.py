@@ -544,7 +544,7 @@ class SelectField(SelectFieldBase):
     def pre_validate(self, form):
         if issubclass(self.choices, enum.Enum):
             for v in self.choices:
-                if self.data == v:
+                if self.data == v.value:
                     break
             else:
                 raise ValueError(self.gettext("Not a valid choice"))
