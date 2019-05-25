@@ -513,7 +513,7 @@ class SelectField(SelectFieldBase):
         self, label=None, validators=None, coerce=text_type, choices=None, **kwargs
     ):
         super(SelectField, self).__init__(label, validators, **kwargs)
-        self.coerce = coerce if not issubclass(self.choices, enum.Enum) else self.enum_coerce
+        self.coerce = coerce if not issubclass(choices, enum.Enum) else self.enum_coerce
         self.choices = copy(choices)
 
     def enum_coerce(self, item):
