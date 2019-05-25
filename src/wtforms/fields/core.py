@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import enum
 from copy import copy
 import datetime
 import decimal
@@ -512,12 +513,19 @@ class SelectField(SelectFieldBase):
         self, label=None, validators=None, coerce=text_type, choices=None, **kwargs
     ):
         super(SelectField, self).__init__(label, validators, **kwargs)
-        self.coerce = coerce
+        self.coerce = coerce if not issubclass(self.choices, enum.Enum) else self.enum_coerce
         self.choices = copy(choices)
 
+    def enum_coerce(self, item):
+        return self.choices(int(item)) if not isinstance(item, self.choices) else item
+
     def iter_choices(self):
-        for value, label in self.choices:
-            yield (value, label, self.coerce(value) == self.data)
+        if issubclass(self.choices, enum.Enum):
+            for choice in self.choices:
+                yield (choice, choice.name, self.coerce(choice) == self.data)
+        else:
+            for value, label in self.choices:
+                yield (value, label, self.coerce(value) == self.data)
 
     def process_data(self, value):
         try:
