@@ -517,7 +517,7 @@ class SelectField(SelectFieldBase):
         self.choices = copy(choices)
 
     def enum_coerce(self, item):
-        return self.choices(int(item)) if not isinstance(item, self.choices) else item
+        return self.choices(int(item)).value if not isinstance(item, self.choices) else item.value
 
     def iter_choices(self):
         if issubclass(self.choices, enum.Enum):
