@@ -542,11 +542,18 @@ class SelectField(SelectFieldBase):
                 raise ValueError(self.gettext("Invalid Choice: could not coerce"))
 
     def pre_validate(self, form):
-        for v, _ in self.choices:
-            if self.data == v:
-                break
+        if issubclass(self.choices, enum.Enum):
+            for v in self.choices:
+                if self.data == v:
+                    break
+            else:
+                raise ValueError(self.gettext("Not a valid choice"))
         else:
-            raise ValueError(self.gettext("Not a valid choice"))
+            for v, _ in self.choices:
+                if self.data == v:
+                    break
+            else:
+                raise ValueError(self.gettext("Not a valid choice"))
 
 
 class SelectMultipleField(SelectField):
